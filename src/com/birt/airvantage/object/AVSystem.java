@@ -1,7 +1,18 @@
-package com.birt.airvantage;
+/*******************************************************************************
+ * Copyright (c) 2015 Sierra Wireless.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *    RJA - initial API and implementation and/or initial documentation
+ *******************************************************************************/ 
+package com.birt.airvantage.object;
 
 import java.util.ArrayList;
 import java.util.List;
+
 
 public class AVSystem {
 	public String name;
@@ -16,7 +27,7 @@ public class AVSystem {
 	public long lastComDate = 0;
 	public String serial;
 	public List<String> labels = new ArrayList<String>();
-	public HistoricalData historicalBlackInkLevel = new HistoricalData();
+	public List<AVTimestampedData> historicalBlackInkLevel = new ArrayList<AVTimestampedData>();
 	public List<AVTimestampedData> historicalColorInkLevel;
 
 	public String getName() {
@@ -82,7 +93,7 @@ public class AVSystem {
 		return "Others";
 	}
 	
-	public HistoricalData getHistoricalBlackInkLevel() {
+	public List<AVTimestampedData> getHistoricalBlackInkLevel() {
 		return historicalBlackInkLevel;
 	}
 	
@@ -92,7 +103,7 @@ public class AVSystem {
 	
 	public void setHistoricalBlackInkLevel(List<AVTimestampedData> list)
 	{
-		historicalBlackInkLevel.setHistory(list);
+		historicalBlackInkLevel = list;
 	}
 	
 	public void setHistoricalColorInkLevel(List<AVTimestampedData> list)

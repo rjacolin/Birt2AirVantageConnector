@@ -1,3 +1,13 @@
+/*******************************************************************************
+ * Copyright (c) 2015 Sierra Wireless.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *    RJA - initial API and implementation and/or initial documentation
+ *******************************************************************************/ 
 package com.birt.airvantage;
 
 import java.io.IOException;
@@ -14,6 +24,12 @@ import org.apache.http.client.fluent.Response;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+/**
+ * This is the low level interface with the AirVantage API.
+ * 
+ * @author rjacolin
+ *
+ */
 public class AVRequest {
 
 	private Parameters params = null;
@@ -96,11 +112,6 @@ public class AVRequest {
 			System.out.println("URL lastDdatapoints: " + url);
 		return getRequest(url);
 	}
-	
-//	public String getSystem(String uid) {
-//		String url = params.getApiUrl() + "/v1/systems/" + uid + "?access_token=" + token;
-//		return getRequest(url);
-//	}
 
 	private String getRequest(String url) {
 		try {
@@ -114,7 +125,7 @@ public class AVRequest {
 								.getStatusCode(), statusLine
 								.getReasonPhrase());
 					}
-					if (entity == null) throw new ClientProtocolException("Pas de données");
+					if (entity == null) throw new ClientProtocolException("No data");
 					return IOUtils.toString(entity.getContent());
 				}
 			});						

@@ -1,17 +1,46 @@
+/*******************************************************************************
+ * Copyright (c) 2015 Sierra Wireless.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *    RJA - initial API and implementation and/or initial documentation
+ *******************************************************************************/ 
 package com.birt.airvantage;
 
 import java.util.HashMap;
 import java.util.Map;
 
+import com.birt.airvantage.object.AVSystem;
+import com.birt.airvantage.object.AVTimestampedData;
+import com.birt.airvantage.object.User;
+
+/**
+ * This class illustrates how to use the connectors and AirVantage REST API.
+ * 
+ * Use each connector in the data source:
+ *  - properties > POJO Data class name filled by the connector class name (eg. SystemConnector)
+ *  - Column Mapping > POJO Class Name filled by the matching object (eg. AVSystem)
+ * 
+ * @author rjacolin
+ *
+ */
 public class Test {
 
 	public static void main(String[] args) {
-		UserConnector uc = new UserConnector();
+		
 		Map<String, Object> dataSetParamValues = new HashMap<String, Object>();
 		dataSetParamValues.put("login", "rja@sierrawireless.com");
 		dataSetParamValues.put("password", "test1234!");
 		dataSetParamValues.put("clientSecret", "fe86cdee28b94822b478f110305ba0ce");
 		dataSetParamValues.put("clientId", "51044a27ece44abbaa97170e78e0c92f");
+		
+		/***************************************/
+		/* Get the current user                */
+		/***************************************/
+		UserConnector uc = new UserConnector();
 		uc.open(null, dataSetParamValues);
 		
 		User user = uc.next();
@@ -19,7 +48,10 @@ public class Test {
 		System.out.println("Company: " + user.getCompany() + "\n");
 		System.out.println("icon: " + user.getIcon() + "\n");
 		
-		AirVantage a = new AirVantage();
+		/***************************************/
+		/* Get the system fleet                */
+		/***************************************/
+		SystemConnector a = new SystemConnector();
 		a.open(null, dataSetParamValues);
 		
 		AVSystem s = (AVSystem) a.next();
@@ -27,6 +59,9 @@ public class Test {
 		while (s != null) {
 			System.out.println(s.getName() + ", " + s.getUid() + ", " + s.getState() + ", " + s.getCommStatus() + ", " + s.getActiveWifi() + ", " + 
 								s.isAlarmOn() + ", " + s.getLastCom() + ", " + s.getLabel());
+			/*****************************************/
+			/* Get the lastdatapoint for each system */
+			/*****************************************/
 			LastDataPointConnector ldtconnector = new LastDataPointConnector();
 			dataSetParamValues.put("system", s.uid);
 			ldtconnector.open(null, dataSetParamValues);
@@ -38,12 +73,16 @@ public class Test {
 
 		a.close();
 		
-		HistoricalData h = new HistoricalData();
+		/****************************************/
+		/* Get the historical Data for a system */
+		/****************************************/
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("login", "rja@sierrawireless.com");
 		map.put("password", "test1234!");
 		map.put("clientSecret", "fe86cdee28b94822b478f110305ba0ce");
 		map.put("clientId", "51044a27ece44abbaa97170e78e0c92f");
+		
+		HistoricalDataConnector h = new HistoricalDataConnector();
 		map.put("system", "2efd9d71e441456fa45e36f269a37a5a");
 		map.put("dataId", "phone.custom.down.1");
 		h.open(null, map);
@@ -57,6 +96,9 @@ public class Test {
 
 		h.close();
 		
+		/************************************************************/
+		/* Get the historical data for 2 systems (or for the fleet) */
+		/************************************************************/
 		FleetHistoricalDataConnector fh = new FleetHistoricalDataConnector();
 		map.put("systems", "2efd9d71e441456fa45e36f269a37a5a,0bccdbea4eb84b579e72e8b720381bb6");
 		map.put("dataId", "phone.custom.down.1");
